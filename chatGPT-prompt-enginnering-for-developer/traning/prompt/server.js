@@ -2,7 +2,7 @@
 import "dotenv/config";
 import OpenAI from "openai";
 
-const apiKey = process.env.OPENROUTER_API_KEY;
+const apiKey = (process.env.OPENROUTER_API_KEY || "").trim();
 
 if (!apiKey) {
     throw new Error("Missing API key. Set OPENROUTER_API_KEY in .env");
@@ -82,4 +82,9 @@ get_completion(prompt)
         const status = error?.status ?? "unknown";
         const message = error?.error?.message || error?.message || "Unknown error";
         console.error(`Request failed (${status}): ${message}`);
+        if (status === 401) {
+            console.error(
+                "Auth failed. Verify OPENROUTER_API_KEY is valid, active, and copied exactly (no extra spaces/quotes)."
+            );
+        }
     });
